@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -16,8 +17,13 @@ namespace UnionFind
         public QuickFind(List<T> values)
         {
             this.values = values;
+            map = new Dictionary<T, int>();
             sets = new int[values.Count];
-            values = new List<T>();
+            for(int i = 0; i < values.Count; i ++)
+            {
+                map.Add(values[i], i);
+                sets[i] = i;
+            }
         }
 
         public int Find(T value)
@@ -32,6 +38,12 @@ namespace UnionFind
             {
                 return false;
             }
+
+            //if (AreConnected(value, unionValue))
+            //{
+            //    return false;
+            //}
+
             foreach(T Value in values)
             {
                 if(sets[map[Value]] == oldSet)
