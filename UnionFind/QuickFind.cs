@@ -6,7 +6,7 @@ using System.Text;
 
 namespace UnionFind
 {
-    public class QuickFind<T>
+    public class QuickFind<T> : IUnionFind<T>
     {
 
         private int[] sets;
