@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Data;
 using System.IO;
 
 namespace UnionFind
@@ -37,7 +39,7 @@ namespace UnionFind
 
             var friends = File.ReadAllLines("..\\..\\..\\Friends.txt");
             List<string> friendsList = new List<string>();
-            for(int i = 1; i < 22; i ++)
+            for (int i = 1; i < 22; i++)
             {
                 friendsList.Add(friends[i]);
             }
@@ -48,19 +50,77 @@ namespace UnionFind
             QuickFind<string> Find = new QuickFind<string>(friendsList);
 
             string[] union;
-            for(int i = 22; i < friends.Length; i ++)
+            for (int i = 22; i < friends.Length; i++)
             {
                 union = friends[i].Split(',');
                 Find.Union(union[0], union[1]);
             }
 
-            var thing = Find.printBiggestGroup();
-            var other = Find.printSmallestGroup();
+            int smallestGroup = int.MaxValue;
+            int largestGroup = int.MinValue;
+            foreach (int size in Find.sizes)
+            {
+                if(size != 0 && size < smallestGroup)
+                {
+                    smallestGroup = size;
+                }
+                if(size > largestGroup)
+                {
+                    largestGroup = size;
+                }
+            }
 
-            Find.AreConnected("Phoebe", "Racheal");
-            Find.AreConnected("Jim", "Creed");
-            Find.AreConnected("Michael", "Pam");
-            Find.AreConnected("Chandler", "Creed");
+            List<string> smallestGroupList = new List<string>();
+            List<string> largestGroupList = new List<string>();
+            foreach(string friend in Find.values)
+            {
+                if(Find.sizes[Find.sets[Find.map[friend]]] == smallestGroup)
+                {
+                    smallestGroupList.Add(friend);
+                }
+                if(Find.sizes[Find.sets[Find.map[friend]]] == largestGroup)
+                {
+                    largestGroupList.Add(friend);
+                }
+            }
+            foreach(string friend in largestGroupList)
+            {
+                Console.WriteLine($"LargestFriendGroup: {friend}");
+            }
+            Console.WriteLine();
+
+            foreach(string friend in smallestGroupList)
+            {
+                Console.WriteLine($"SmallestFriendGroup: {friend}");
+            }
+            Console.WriteLine();
+
+            //Console.WriteLine();
+            //Console.WriteLine();
+            Console.WriteLine($"Phoebe,Rachel: {Find.AreConnected("Phoebe", "Rachel")}");
+            Console.WriteLine($"Jim,Creed: {Find.AreConnected("Jim", "Creed")}");
+            Console.WriteLine($"Michael,Pam: {Find.AreConnected("Michael", "Pam")}");
+            Console.WriteLine($"Chandler,Creed: {Find.AreConnected("Chandler", "Creed")}");
+
+            Console.WriteLine($"FriendGroupCount: {Find.friendGroupCount}");
+            Console.WriteLine();
+
+            int currentFriendGroup = 0;
+            while (currentFriendGroup < Find.values.Count)
+            {
+                if(Find.sizes[currentFriendGroup] != 0)
+                {
+                    foreach(string friend in Find.values)
+                    {
+                        if(Find.sets[Find.map[friend]] == currentFriendGroup)
+                        {
+                            Console.WriteLine($"FriendGroup{currentFriendGroup}: {friend}");
+                        }
+                    }
+                    Console.WriteLine();
+                }
+                currentFriendGroup++;
+            }
         }
     }
 }
