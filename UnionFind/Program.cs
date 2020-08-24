@@ -45,9 +45,22 @@ namespace UnionFind
             //{
             //    friendsList.Add(friend);
             //}
-            QuickUnion<string> Union = new QuickUnion<string>(friendsList);
+            QuickFind<string> Find = new QuickFind<string>(friendsList);
 
+            string[] union;
+            for(int i = 22; i < friends.Length; i ++)
+            {
+                union = friends[i].Split(',');
+                Find.Union(union[0], union[1]);
+            }
 
+            var thing = Find.printBiggestGroup();
+            var other = Find.printSmallestGroup();
+
+            Find.AreConnected("Phoebe", "Racheal");
+            Find.AreConnected("Jim", "Creed");
+            Find.AreConnected("Michael", "Pam");
+            Find.AreConnected("Chandler", "Creed");
         }
     }
 }
